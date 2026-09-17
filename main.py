@@ -183,15 +183,59 @@ try:
     # 그래프 출력
     st.plotly_chart(fig4, use_container_width=True)
     
-    # '이 그래프로 알 수 있는 것' 안내 상자 (수정된 부분)
+    # '이 그래프로 알 수 있는 것' 안내 상자
     st.info("💡 **이 그래프로 알 수 있는 것:** 초기 스크린 확보량이 최종 관객 수에 미치는 전반적인 비례 관계를 확인하고, 적은 스크린 수로도 대흥행을 기록한 이변작(아웃라이어)을 한눈에 식별할 수 있다.")
 
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 5. (추가 예정) 다음 분석 그래프 구역
+    # Section 5. 10편 이상 장르별 총 관객 수 박스플롯 (Box Plot)
     # -------------------------------------------------------------------
-    st.header("📌 Section 5. (추가 예정) 추가 시각화")
+    st.header("📌 Section 5. 주요 장르별 총 관객 수 분포")
+    
+    # 영화가 10편 이상인 장르 필터링
+    genre_counts = df['장르'].value_counts()
+    target_genres = genre_counts[genre_counts >= 10].index
+    df_box = df[df['장르'].isin(target_genres)]
+    
+    # Plotly 박스플롯 생성
+    fig5 = px.box(
+        df_box,
+        x='장르',
+        y='total_audi',
+        color='장르',
+        hover_name='movieNm',
+        points='outliers',
+        title="<b>영화 10편 이상 장르별 총 관객 수 분포 (박스플롯)</b>",
+        labels={'total_audi': '총 관객 수 (명)', '장르': '장르'},
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    
+    # 이상치 점 호버 설정
+    fig5.update_traces(
+        hovertemplate="<b>영화명: %{hovertext}</b><br>총 관객 수: %{y:,}명<extra></extra>"
+    )
+    
+    fig5.update_layout(
+        xaxis_title="장르 (10편 이상 보유)",
+        yaxis_title="총 관객 수 (명)",
+        template="plotly_white",
+        height=600,
+        showlegend=False
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig5, use_container_width=True)
+    
+    # '이 그래프로 알 수 있는 것' 안내 상자
+    st.info("💡 **이 그래프로 알 수 있는 것:** 주요 장르별 관객 수의 중간값과 범위를 비교하고, 각 장르 내에서 일반적 수치를 크게 상회하는 초대형 흥행작(이상치 점)을 한눈에 식별할 수 있다.")
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 6. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 6. (추가 예정) 추가 시각화")
     st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
