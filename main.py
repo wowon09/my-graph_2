@@ -150,11 +150,51 @@ try:
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 4. (추가 예정) 다음 분석 그래프 구역
+    # Section 4. 개봉일 스크린수 vs 총 관객수 (산점도 그래프)
     # -------------------------------------------------------------------
-    st.header("📌 Section 4. (추가 예정) 추가 시각화")
+    st.header("📌 Section 4. 개봉일 스크린 수와 총 관객 수의 관계")
+    
+    # Plotly 산점도(Scatter Plot) 생성
+    fig4 = px.scatter(
+        df,
+        x='first_scrn',
+        y='total_audi',
+        color='장르',
+        hover_name='movieNm',
+        title="<b>개봉일 스크린 수 vs 총 관객 수 (산점도)</b>",
+        labels={'first_scrn': '개봉일 스크린 수 (개)', 'total_audi': '총 관객 수 (명)', '장르': '장르'},
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    
+    # 마우스 호버 설정
+    fig4.update_traces(
+        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>개봉일 스크린 수: %{x:,}개<br>총 관객 수: %{y:,}명<extra></extra>",
+        marker=dict(size=9, opacity=0.8)
+    )
+    
+    fig4.update_layout(
+        xaxis_title="개봉일 스크린 수 (개)",
+        yaxis_title="총 관객 수 (명)",
+        template="plotly_white",
+        height=600,
+        legend=dict(title="장르 목록")
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig4, use_container_width=True)
+    
+    # '이 그래프로 알 수 있는 것' 안내 상자
+    st.info("💡 **이 그래프로 알 수 있는 것:** 산점도 유형을 통해 개봉일 스크린 수와 최종 총 관객 수 간의 양의 상관관계 및 장르별 점유 스크린과 흥행 규모의 분포 차이를 파악할 수 있다.")
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 5. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 5. (추가 예정) 추가 시각화")
     st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
 except Exception as e:
     st.error(f"데이터를 불러오는 중 오류가 발생했습니다: {e}")
+    
