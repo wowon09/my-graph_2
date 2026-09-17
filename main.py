@@ -233,9 +233,54 @@ try:
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 6. (추가 예정) 다음 분석 그래프 구역
+    # Section 6. 개봉일 스크린수, 첫 주 관객수, 총 관객수 (버블 차트)
     # -------------------------------------------------------------------
-    st.header("📌 Section 6. (추가 예정) 추가 시각화")
+    st.header("📌 Section 6. 개봉일 스크린 수, 첫 주 관객 수, 총 관객 수의 관계")
+    
+    # Plotly 버블 차트 생성 (크기: first_week_audi)
+    fig6 = px.scatter(
+        df,
+        x='first_scrn',
+        y='total_audi',
+        size='first_week_audi',
+        color='장르',
+        hover_name='movieNm',
+        size_max=40,
+        title="<b>개봉일 스크린 수 vs 총 관객 수 및 첫 주 관객 수 (버블 차트)</b>",
+        labels={
+            'first_scrn': '개봉일 스크린 수 (개)',
+            'total_audi': '총 관객 수 (명)',
+            'first_week_audi': '첫 주 관객 수 (명)',
+            '장르': '장르'
+        },
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    
+    # 마우스 호버 설정
+    fig6.update_traces(
+        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>개봉일 스크린 수: %{x:,}개<br>총 관객 수: %{y:,}명<br>첫 주 관객 수: %{marker.size:,}명<extra></extra>"
+    )
+    
+    fig6.update_layout(
+        xaxis_title="개봉일 스크린 수 (개)",
+        yaxis_title="총 관객 수 (명)",
+        template="plotly_white",
+        height=600,
+        legend=dict(title="장르 목록")
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig6, use_container_width=True)
+    
+    # '이 그래프로 알 수 있는 것' 안내 상자
+    st.info("💡 **이 그래프로 알 수 있는 것:** 개봉일 스크린 수와 최종 관객 수 관계뿐만 아니라, 버블의 크기를 통해 초기 첫 주 흥행 파급력이 최종 관객 수로 이어지는지 여부를 다차원적으로 비교분석할 수 있다.")
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 7. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 7. (추가 예정) 추가 시각화")
     st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
