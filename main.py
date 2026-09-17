@@ -75,10 +75,43 @@ try:
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 2. (추가 예정) 다음 분석 그래프 구역
+    # Section 2. 장르 및 영화별 총 관객 수 트리맵 (Treemap)
     # -------------------------------------------------------------------
-    st.header("📌 Section 2. (추가 예정) 분포 및 관계 시각화")
-    st.text("다음 분석 그래프가 추가될 구역입니다.")
+    st.header("📌 Section 2. 장르 및 영화별 총 관객 수 트리맵")
+    
+    # 계층구조 설정: 장르 > 영화명 (칸 크기: 총 관객 수)
+    fig2 = px.treemap(
+        df,
+        path=[px.Constant("전체 장르"), '장르', 'movieNm'],
+        values='total_audi',
+        title="<b>장르 및 영화별 총 관객 수 분포 (트리맵)</b>",
+        color='장르',
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    
+    # 툴팁 설정: 영화명 및 총 관객 수 표기
+    fig2.update_traces(
+        hovertemplate="<b>%{label}</b><br>총 관객 수: %{value:,}명<extra></extra>"
+    )
+    
+    fig2.update_layout(
+        template="plotly_white",
+        height=650
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig2, use_container_width=True)
+    
+    # '이 그래프로 알 수 있는 것' 안내 상자
+    st.info("💡 **이 그래프로 알 수 있는 것:** ")
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 3. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 3. (추가 예정) 추가 시각화")
+    st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
 except Exception as e:
