@@ -282,7 +282,7 @@ try:
     # -------------------------------------------------------------------
     st.header("📌 Section 7. 제작 국가 및 장르별 영화 편수 분포")
     
-    # Plotly 선버스트(Sunburst) 차트 생성 (계층: 전체 > 제작 국가 > 장르, 타일 크기: 영화 편수)
+    # Plotly 선버스트(Sunburst) 차트 생성
     fig7 = px.sunburst(
         df,
         path=[px.Constant("전체 국가"), 'nation', '장르'],
@@ -291,7 +291,7 @@ try:
         color_discrete_sequence=px.colors.qualitative.Set3
     )
     
-    # 툴팁 설정: 마우스 호버 시 대상명과 영화 편수 표기
+    # 툴팁 설정
     fig7.update_traces(
         hovertemplate="<b>%{label}</b><br>영화 편수: %{value}편<extra></extra>"
     )
@@ -310,11 +310,55 @@ try:
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 8. (추가 예정) 다음 분석 그래프 구역
+    # Section 8. 10위권 체류 날수 vs 총 관객 수 (산점도 그래프)
     # -------------------------------------------------------------------
-    st.header("📌 Section 8. (추가 예정) 추가 시각화")
+    st.header("📌 Section 8. 10위권에 머문 날수는 대개 며칠쯤인가")
+    
+    # Plotly 산점도 생성
+    fig8 = px.scatter(
+        df,
+        x='days_in_top10',
+        y='total_audi',
+        color='장르',
+        hover_name='movieNm',
+        title="<b>10위권에 머문 날수는 대개 며칠쯤인가</b>",
+        labels={
+            'days_in_top10': '10위권에 머문 날수 (일)',
+            'total_audi': '총 관객 수 (명)',
+            '장르': '장르'
+        },
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    
+    # 마우스 호버 설정
+    fig8.update_traces(
+        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>10위권 머문 날수: %{x}일<br>총 관객 수: %{y:,}명<extra></extra>",
+        marker=dict(size=9, opacity=0.8)
+    )
+    
+    fig8.update_layout(
+        xaxis_title="10위권에 머문 날수 (일)",
+        yaxis_title="총 관객 수 (명)",
+        template="plotly_white",
+        height=600,
+        legend=dict(title="장르 목록")
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig8, use_container_width=True)
+    
+    # '이 그래프로 알 수 있는 것' 안내 상자
+    st.info("💡 **이 그래프로 알 수 있는 것:** 영화가 박스오피스 10위권 내에 머문 기간(일수)과 최종 총 관객 수 간의 밀접한 비례 관계를 확인하고, 장기 흥행(롱런) 작들의 데이터 분포를 직관적으로 파악할 수 있다.")
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 9. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 9. (추가 예정) 추가 시각화")
     st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
 except Exception as e:
     st.error(f"데이터를 불러오는 중 오류가 발생했습니다: {e}")
+    
