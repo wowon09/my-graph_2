@@ -103,14 +103,56 @@ try:
     st.plotly_chart(fig2, use_container_width=True)
     
     # '이 그래프로 알 수 있는 것' 안내 상자
-    st.info("💡 **이 그래프로 알 수 있는 것:** ")
+    st.info("💡 **이 그래프로 알 수 있는 것:** 트리맵 유형을 통해 장르별 전체 관객 규모와 개별 영화가 장르 내에서 차지하는 비중을 면적으로 비교할 수 있다.")
 
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 3. (추가 예정) 다음 분석 그래프 구역
+    # Section 3. 총 관객 수 히스토그램 (Histogram)
     # -------------------------------------------------------------------
-    st.header("📌 Section 3. (추가 예정) 추가 시각화")
+    st.header("📌 Section 3. 영화별 총 관객 수 분포")
+    
+    # Plotly 히스토그램 생성
+    fig3 = px.histogram(
+        df,
+        x='total_audi',
+        nbins=30,
+        title="<b>영화별 총 관객 수 분포 (히스토그램)</b>",
+        labels={'total_audi': '총 관객 수 (명)'},
+        color_discrete_sequence=['#E50914']
+    )
+    
+    fig3.update_traces(
+        hovertemplate="<b>관객 수 구간:</b> %{x}<br><b>영화 수:</b> %{y}편<extra></extra>"
+    )
+    
+    fig3.update_layout(
+        xaxis_title="총 관객 수 (명)",
+        yaxis_title="영화 수 (편)",
+        template="plotly_white",
+        height=500
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig3, use_container_width=True)
+    
+    # 최다 관객 보유 영화 데이터 추출
+    max_movie_row = df.loc[df['total_audi'].idxmax()]
+    max_movie_name = max_movie_row['movieNm']
+    max_audi_val = max_movie_row['total_audi']
+    
+    # 동적 분석 결과 안내 문구
+    st.info(
+        f"💡 **이 그래프로 알 수 있는 것:** 대부분의 영화는 총 관객 수 **100만 명 이하 구간**에 밀집해 있는 반면, "
+        f"가장 관객 수가 많은 영화는 **{max_movie_name}**({max_audi_val:,.0f}명)이다."
+    )
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 4. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 4. (추가 예정) 추가 시각화")
     st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
