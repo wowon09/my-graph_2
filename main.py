@@ -278,9 +278,41 @@ try:
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 7. (추가 예정) 다음 분석 그래프 구역
+    # Section 7. 제작 국가 및 장르별 영화 편수 (선버스트 차트)
     # -------------------------------------------------------------------
-    st.header("📌 Section 7. (추가 예정) 추가 시각화")
+    st.header("📌 Section 7. 제작 국가 및 장르별 영화 편수 분포")
+    
+    # Plotly 선버스트(Sunburst) 차트 생성 (계층: 전체 > 제작 국가 > 장르, 타일 크기: 영화 편수)
+    fig7 = px.sunburst(
+        df,
+        path=[px.Constant("전체 국가"), 'nation', '장르'],
+        title="<b>제작 국가 및 장르별 영화 편수 분포 (선버스트 차트)</b>",
+        color='nation',
+        color_discrete_sequence=px.colors.qualitative.Set3
+    )
+    
+    # 툴팁 설정: 마우스 호버 시 대상명과 영화 편수 표기
+    fig7.update_traces(
+        hovertemplate="<b>%{label}</b><br>영화 편수: %{value}편<extra></extra>"
+    )
+    
+    fig7.update_layout(
+        template="plotly_white",
+        height=650
+    )
+    
+    # 그래프 출력
+    st.plotly_chart(fig7, use_container_width=True)
+    
+    # '이 그래프로 알 수 있는 것' 안내 상자
+    st.info("💡 **이 그래프로 알 수 있는 것:** 선버스트 차트 유형을 통해 제작 국가별 영화 편수 비율과 각 국가 내에서 점유하는 주요 장르의 비중을 계층적 동심원 구조로 파악할 수 있다.")
+
+    st.markdown("---")
+
+    # -------------------------------------------------------------------
+    # Section 8. (추가 예정) 다음 분석 그래프 구역
+    # -------------------------------------------------------------------
+    st.header("📌 Section 8. (추가 예정) 추가 시각화")
     st.text("다음 분석 그래프가 들어올 구역입니다.")
     st.info("💡 **이 그래프로 알 수 있는 것:** ")
 
