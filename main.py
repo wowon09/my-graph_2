@@ -278,6 +278,7 @@ try:
     # -------------------------------------------------------------------
     st.header("📌 Section 8. 개봉 첫 주 관객 수 10위권까지 제발.")
     
+    # 개봉 첫 주 관객 수 기준 상위 10개 영화 필터링
     df_top10_first_week = df.nlargest(10, 'first_week_audi')
     
     fig8 = px.scatter(
