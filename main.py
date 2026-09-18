@@ -310,30 +310,35 @@ try:
     st.markdown("---")
 
     # -------------------------------------------------------------------
-    # Section 8. 10위권 체류 날수 vs 총 관객 수 (산점도 그래프)
+    # Section 8. 개봉 첫 주 관객 수 10위권 (산점도 그래프)
     # -------------------------------------------------------------------
-    st.header("📌 Section 8. 10위권에 머문 날수는 대개 며칠쯤인가")
+    st.header("📌 Section 8. 개봉 첫 주 관객 수 10위권까지 제발.")
+    
+    # 개봉 첫 주 관객 수(first_week_audi) 기준 상위 10개 영화 필터링
+    df_top10_first_week = df.nlargest(10, 'first_week_audi')
     
     # Plotly 산점도 생성
     fig8 = px.scatter(
-        df,
+        df_top10_first_week,
         x='days_in_top10',
         y='total_audi',
         color='장르',
         hover_name='movieNm',
-        title="<b>10위권에 머문 날수는 대개 며칠쯤인가</b>",
+        title="<b>개봉 첫 주 관객 수 10위권까지 제발.</b>",
         labels={
             'days_in_top10': '10위권에 머문 날수 (일)',
             'total_audi': '총 관객 수 (명)',
+            'first_week_audi': '첫 주 관객 수 (명)',
             '장르': '장르'
         },
         color_discrete_sequence=px.colors.qualitative.Set3
     )
     
-    # 마우스 호버 설정
+    # 마우스 호버 및 점 크기 설정
     fig8.update_traces(
-        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>10위권 머문 날수: %{x}일<br>총 관객 수: %{y:,}명<extra></extra>",
-        marker=dict(size=9, opacity=0.8)
+        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>10위권 머문 날수: %{x}일<br>총 관객 수: %{y:,}명<br>첫 주 관객 수: %{customdata[0]:,}명<extra></extra>",
+        customdata=df_top10_first_week[['first_week_audi']],
+        marker=dict(size=12, opacity=0.8)
     )
     
     fig8.update_layout(
@@ -348,7 +353,7 @@ try:
     st.plotly_chart(fig8, use_container_width=True)
     
     # '이 그래프로 알 수 있는 것' 안내 상자
-    st.info("💡 **이 그래프로 알 수 있는 것:** 영화가 박스오피스 10위권 내에 머문 기간(일수)과 최종 총 관객 수 간의 밀접한 비례 관계를 확인하고, 장기 흥행(롱런) 작들의 데이터 분포를 직관적으로 파악할 수 있다.")
+    st.info("💡 **이 그래프로 알 수 있는 것:** 개봉 첫 주 관객 수가 가장 높았던 TOP 10 영화들이 박스오피스 10위권 내에서 얼마나 오래 머물렀으며, 최종적으로 달성한 총 관객 수와의 상관관계를 집중 파악할 수 있다.")
 
     st.markdown("---")
 
@@ -361,4 +366,3 @@ try:
 
 except Exception as e:
     st.error(f"데이터를 불러오는 중 오류가 발생했습니다: {e}")
-    
