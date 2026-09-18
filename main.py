@@ -14,14 +14,19 @@ st.title("🎬 영화 데이터 그래프 도감 2 - 분포와 관계")
 st.markdown("1년간 박스오피스 10위권에 진입한 216편의 개봉 영화 데이터를 바탕으로 장르, 국가, 스크린 수 등의 분포와 상관관계를 시각화합니다.")
 st.markdown("---")
 
-# 데이터 로드 함수 (캐싱 및 결측치 안심 처리 적용)
+# 데이터 로드 함수 (캐싱 및 계층형 차트 결측치 처리)
 @st.cache_data
 def load_data():
     url = "https://raw.githubusercontent.com/greatsong/modudata/main/data/kobis_movies.csv"
     df = pd.read_csv(url)
     
-    # 장르 정제: NaN 결측치를 빈 문자열로 채운 뒤 첫 번째 장르만 안전하게 추출
-    df['장르'] = df['genre'].fillna('').astype(str).str.split('|').str[0].str.strip()
+    # 장르 정제: NaN 및 빈 문자열 처리 후 첫 번째 장르만 추출
+    df['genre'] = df['genre'].fillna('기타').astype(str)
+    df['장르'] = df['genre'].apply(lambda x: x.split('|')[0].strip() if x.strip() != '' else '기타')
+    
+    # 제작 국가 정제: 선버스트 차트 오류 방지를 위한 결측치 대체
+    df['nation'] = df['nation'].fillna('기타').astype(str).str.strip()
+    df['nation'] = df['nation'].replace('', '기타')
     
     # 수치형 데이터 타입 변환
     numeric_cols = ['first_scrn', 'first_show', 'first_week_audi', 'total_audi', 'days_in_top10']
@@ -278,7 +283,7 @@ try:
     # -------------------------------------------------------------------
     st.header("📌 Section 8. 개봉 첫 주 관객 수 10위권까지 제발.")
     
-    # 개봉 첫 주 관객 수 기준 상위 10개 영화 필터링
+    # 개봉 첫 주 관객 수 기준 상위 10개 영화 추출
     df_top10_first_week = df.nlargest(10, 'first_week_audi')
     
     fig8 = px.scatter(
@@ -291,15 +296,13 @@ try:
         labels={
             'days_in_top10': '10위권에 머문 날수 (일)',
             'total_audi': '총 관객 수 (명)',
-            'first_week_audi': '첫 주 관객 수 (명)',
             '장르': '장르'
         },
         color_discrete_sequence=px.colors.qualitative.Set3
     )
     
     fig8.update_traces(
-        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>10위권 머문 날수: %{x}일<br>총 관객 수: %{y:,}명<br>첫 주 관객 수: %{customdata[0]:,}명<extra></extra>",
-        customdata=df_top10_first_week[['first_week_audi']],
+        hovertemplate="<b>영화명: %{hovertext}</b><br>장르: %{fullData.name}<br>10위권 머문 날수: %{x}일<br>총 관객 수: %{y:,}명<extra></extra>",
         marker=dict(size=12, opacity=0.8)
     )
     
@@ -312,7 +315,7 @@ try:
     )
     
     st.plotly_chart(fig8, use_container_width=True)
-    st.info("💡 **이 그래프로 알 수 있는 것:** 개봉 첫 주 관객 수가 가장 높았던 TOP 10 영화들이 박스오피스 10위권 내에서 얼마나 오래 머물렀으며, 최종적으로 달성한 총 관객 수와의 상관관계를 집중 파악할 수 있다.")
+    st.info("💡 **이 그래프로 알 수 있는 것:** 개봉 첫 주 관객 수가 가장 많았던 TOP 10 영화들이 박스오피스 10위권에 머문 날수와 최종 관객 수 간의 상관관계를 파악할 수 있다.")
 
     st.markdown("---")
 
